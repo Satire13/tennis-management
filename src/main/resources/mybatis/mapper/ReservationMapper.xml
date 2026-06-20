@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tennis.dao.ReservationMapper">
+
+    <resultMap id="reservationMap" type="com.tennis.entity.Reservation" autoMapping="true">
+        <id column="id" property="id"/>
+    </resultMap>
+
+    <select id="findById" parameterType="int" resultMap="reservationMap">
+        SELECT r.*, u.username AS username, c.court_name AS courtName, c.location AS courtLocation
+        FROM reservations r
+        LEFT JOIN users u ON r.user_id = u.id
+        LEFT JOIN courts c ON r.court_id = c.id
+        WHERE r.id = #{id}
+    </select>
+
+    <select id="findByUserId" parameterType="int" resultMap="reservationMap">
+        SELECT r.*, u.username AS username, c.court_name AS courtName, c.location AS courtLocation
+        FROM reservations r
+        LEFT JOIN users u ON r.user_id = u.id
+        LEFT JOIN courts c ON r.court_id = c.id
+        WHERE r.user_id = #{userId}
+    </select>
+
+    <select id="findAll" resultMap="reservationMap">
+        SELECT r.*, u.username AS username, c.court_name AS courtName, c.location AS courtLocation
+        FROM reservations r
+        LEFT JOIN users u ON r.user_id = u.id
+        LEFT JOIN courts c ON r.court_id = c.id
+    </select>
+
+    <select id="findConflicting" resultMap="reservationMap">
+        SELECT r.*, u.username AS username, c.court_name AS courtName, c.location AS courtLocation
+        FROM reservations r
+        LEFT JOIN users u ON r.user_id = u.id
+        LEFT JOIN courts c ON r.court_id = c.id
+        WHERE r.court_id = #{courtId}
+          AND r.reserve_date = #{reserveDate}
+          AND r.status != 'cancelled'
+          AND r.start_time &lt; #{endTime}
+          AND r.end_time &gt; #{startTime}
+    </select>
+
+    <insert id="insert" parameterType="com.tennis.entity.Reservation" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO reservations (user_id, court_id, reserve_date, start_time, end_time, status)
+        VALUES (#{userId}, #{courtId}, #{reserveDate}, #{startTime}, #{endTime}, #{status})
+    </insert>
+
+    <update id="updateStatus" parameterType="com.tennis.entity.Reservation">
+        UPDATE reservations
+        SET status = #{status}
+        WHERE id = #{id}
+    </update>
+
+</mapper>

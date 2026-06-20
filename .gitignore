@@ -1,0 +1,13 @@
+target/
+*.iml
+.idea/
+*.class
+*.jar
+*.war
+logs/
+nbproject/
+.settings/
+.classpath
+.project
+*.log
+*.log.*

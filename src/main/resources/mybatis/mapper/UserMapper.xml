@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tennis.dao.UserMapper">
+
+    <select id="findById" parameterType="int" resultType="com.tennis.entity.User">
+        SELECT * FROM users WHERE id = #{id}
+    </select>
+
+    <select id="findByUsername" parameterType="string" resultType="com.tennis.entity.User">
+        SELECT * FROM users WHERE username = #{username}
+    </select>
+
+    <insert id="insert" parameterType="com.tennis.entity.User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO users (username, password, real_name, email, phone, role, status, create_time)
+        VALUES (#{username}, #{password}, #{realName}, #{email}, #{phone}, #{role}, #{status}, #{createTime})
+    </insert>
+
+    <update id="update" parameterType="com.tennis.entity.User">
+        UPDATE users
+        SET username = #{username},
+            password = #{password},
+            real_name = #{realName},
+            email = #{email},
+            phone = #{phone},
+            role = #{role},
+            status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <select id="findAll" resultType="com.tennis.entity.User">
+        SELECT * FROM users
+    </select>
+
+</mapper>

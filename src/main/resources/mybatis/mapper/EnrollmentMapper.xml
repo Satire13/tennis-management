@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tennis.dao.EnrollmentMapper">
+
+    <resultMap id="enrollmentMap" type="com.tennis.entity.Enrollment" autoMapping="true">
+        <id column="id" property="id"/>
+    </resultMap>
+
+    <select id="findById" parameterType="int" resultMap="enrollmentMap">
+        SELECT en.*,
+               e.title AS eventTitle,
+               e.event_date AS eventDate,
+               e.location AS eventLocation,
+               u.username AS username,
+               u.real_name AS realName
+        FROM enrollments en
+        LEFT JOIN events e ON en.event_id = e.id
+        LEFT JOIN users u ON en.user_id = u.id
+        WHERE en.id = #{id}
+    </select>
+
+    <select id="findByUserAndEvent" resultMap="enrollmentMap">
+        SELECT en.*,
+               e.title AS eventTitle,
+               e.event_date AS eventDate,
+               e.location AS eventLocation,
+               u.username AS username,
+               u.real_name AS realName
+        FROM enrollments en
+        LEFT JOIN events e ON en.event_id = e.id
+        LEFT JOIN users u ON en.user_id = u.id
+        WHERE en.user_id = #{userId} AND en.event_id = #{eventId}
+    </select>
+
+    <select id="findByUserId" parameterType="int" resultMap="enrollmentMap">
+        SELECT en.*,
+               e.title AS eventTitle,
+               e.event_date AS eventDate,
+               e.location AS eventLocation,
+               u.username AS username,
+               u.real_name AS realName
+        FROM enrollments en
+        LEFT JOIN events e ON en.event_id = e.id
+        LEFT JOIN users u ON en.user_id = u.id
+        WHERE en.user_id = #{userId}
+    </select>
+
+    <select id="findByEventId" parameterType="int" resultMap="enrollmentMap">
+        SELECT en.*,
+               e.title AS eventTitle,
+               e.event_date AS eventDate,
+               e.location AS eventLocation,
+               u.username AS username,
+               u.real_name AS realName
+        FROM enrollments en
+        LEFT JOIN events e ON en.event_id = e.id
+        LEFT JOIN users u ON en.user_id = u.id
+        WHERE en.event_id = #{eventId}
+    </select>
+
+    <select id="countByEventId" parameterType="int" resultType="int">
+        SELECT COUNT(*) FROM enrollments
+        WHERE event_id = #{eventId} AND status = 'enrolled'
+    </select>
+
+    <insert id="insert" parameterType="com.tennis.entity.Enrollment" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO enrollments (event_id, user_id, enroll_time, status)
+        VALUES (#{eventId}, #{userId}, #{enrollTime}, #{status})
+    </insert>
+
+    <update id="updateStatus" parameterType="com.tennis.entity.Enrollment">
+        UPDATE enrollments
+        SET status = #{status}
+        WHERE id = #{id}
+    </update>
+
+</mapper>
