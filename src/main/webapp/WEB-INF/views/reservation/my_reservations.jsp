@@ -109,7 +109,11 @@
                                         </td>
                                         <td>
                                             <c:if test="${reservation.status == 'confirmed' || reservation.status == 'CONFIRMED'}">
-                                                <button class="btn btn-sm btn-outline-danger" onclick="cancelReservation(${reservation.id})">取消</button>
+                                                <button class="btn btn-sm btn-outline-danger mr-1" onclick="cancelReservation(${reservation.id})">取消</button>
+                                                <button class="btn btn-sm btn-outline-success" onclick="completeReservation(${reservation.id})">标记完成</button>
+                                            </c:if>
+                                            <c:if test="${reservation.status == 'completed' || reservation.status == 'COMPLETED'}">
+                                                <a href="${pageContext.request.contextPath}/review/write?reservationId=${reservation.id}" class="btn btn-sm btn-tennis">评价</a>
                                             </c:if>
                                         </td>
                                     </tr>
@@ -144,6 +148,29 @@ function cancelReservation(id) {
                 location.reload();
             } else {
                 alert(resp.message || '取消失败，请重试');
+            }
+        },
+        error: function() {
+            alert('网络错误，请重试');
+        }
+    });
+}
+
+function completeReservation(id) {
+    if (!confirm('确认该预约已完成？标记完成后即可对该场地进行评价。')) {
+        return;
+    }
+    $.ajax({
+        type: 'POST',
+        url: contextPath + '/reservation/complete',
+        data: { id: id },
+        dataType: 'json',
+        success: function(resp) {
+            if (resp.success) {
+                alert(resp.message || '操作成功');
+                location.reload();
+            } else {
+                alert(resp.message || '操作失败，请重试');
             }
         },
         error: function() {

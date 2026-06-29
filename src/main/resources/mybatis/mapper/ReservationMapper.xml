@@ -52,4 +52,10 @@
         WHERE id = #{id}
     </update>
 
+    <update id="completeReservation" parameterType="int">
+        UPDATE reservations
+        SET status = 'completed', update_time = NOW()
+        WHERE id = #{id}
+    </update>
+
 </mapper>

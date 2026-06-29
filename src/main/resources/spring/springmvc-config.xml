@@ -53,6 +53,8 @@
             <mvc:exclude-mapping path="/user/doLogin"/>
             <mvc:exclude-mapping path="/user/doRegister"/>
             <mvc:exclude-mapping path="/static/**"/>
+            <mvc:exclude-mapping path="/review/list"/>
+            <mvc:exclude-mapping path="/review/list/"/>
             <bean class="com.tennis.interceptor.LoginInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>

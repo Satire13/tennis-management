@@ -8,6 +8,9 @@ public interface CourtService {
 
     List<Court> findAll();
 
+    /** 查询所有场地（含评分信息） */
+    List<Court> findAllWithRating();
+
     List<Court> findAvailable();
 
     Court findById(Integer id);

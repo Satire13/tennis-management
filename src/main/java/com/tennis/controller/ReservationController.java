@@ -107,6 +107,20 @@ public class ReservationController {
         return result;
     }
 
+    /**
+     * 标记预约为已完成
+     */
+    @PostMapping("/complete")
+    @ResponseBody
+    public Map<String, Object> complete(Integer id, HttpSession session) {
+        Map<String, Object> result = new HashMap<>();
+        User user = (User) session.getAttribute("loginUser");
+        boolean ok = reservationService.complete(id, user.getId());
+        result.put("success", ok);
+        result.put("message", ok ? "操作成功，快去评价吧！" : "操作失败，仅已确认的预约可标记为完成");
+        return result;
+    }
+
     // =================== 后台管理 ===================
 
     /**

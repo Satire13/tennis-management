@@ -14,4 +14,5 @@ public interface ReservationMapper {
                                        @Param("endTime") String endTime);
     int insert(Reservation res);
     int updateStatus(Reservation res);
+    int completeReservation(Integer id);
 }

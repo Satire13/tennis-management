@@ -14,6 +14,17 @@
         SELECT * FROM courts WHERE status = 1
     </select>
 
+    <!-- 查询所有场地（含评分信息） -->
+    <select id="findAllWithRating" resultType="com.tennis.entity.Court">
+        SELECT c.*,
+               COALESCE(ROUND(AVG(r.rating), 1), 0) AS avgRating,
+               COALESCE(COUNT(r.id), 0) AS reviewCount
+        FROM courts c
+        LEFT JOIN reviews r ON c.id = r.court_id
+        GROUP BY c.id
+        ORDER BY c.id
+    </select>
+
     <insert id="insert" parameterType="com.tennis.entity.Court" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO courts (court_name, location, description, status, price, image_url, create_time)
         VALUES (#{courtName}, #{location}, #{description}, #{status}, #{price}, #{imageUrl}, #{createTime})

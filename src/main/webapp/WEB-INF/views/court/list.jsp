@@ -133,7 +133,30 @@
                                     <div class="flex-grow-1"></div>
                                 </c:if>
                                 <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
-                                    <span class="price-tag"><fmt:formatNumber value="${court.price}" pattern="#0"/> 元/小时</span>
+                                    <div>
+                                        <span class="price-tag"><fmt:formatNumber value="${court.price}" pattern="#0"/> 元/小时</span>
+                                        <c:if test="${court.reviewCount > 0}">
+                                            <div class="mt-1">
+                                                <span style="color: #ffc107;">
+                                                    <c:forEach begin="1" end="5" var="i">
+                                                        <c:choose>
+                                                            <c:when test="${i <= court.avgRating}">&#9733;</c:when>
+                                                            <c:when test="${i - 0.5 <= court.avgRating}">&#9733;</c:when>
+                                                            <c:otherwise>&#9734;</c:otherwise>
+                                                        </c:choose>
+                                                    </c:forEach>
+                                                </span>
+                                                <small class="text-muted ml-1">${court.avgRating} (${court.reviewCount}条评价)</small>
+                                                <a href="${pageContext.request.contextPath}/review/list?courtId=${court.id}" class="small ml-1">查看评价</a>
+                                            </div>
+                                        </c:if>
+                                        <c:if test="${court.reviewCount == null || court.reviewCount == 0}">
+                                            <div class="mt-1">
+                                                <small class="text-muted">暂无评价</small>
+                                                <a href="${pageContext.request.contextPath}/review/list?courtId=${court.id}" class="small ml-1">查看评价</a>
+                                            </div>
+                                        </c:if>
+                                    </div>
                                     <c:choose>
                                         <c:when test="${court.status == 1}">
                                             <a href="${pageContext.request.contextPath}/reservation/book?courtId=${court.id}"

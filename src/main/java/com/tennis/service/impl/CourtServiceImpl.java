@@ -20,6 +20,11 @@ public class CourtServiceImpl implements CourtService {
     }
 
     @Override
+    public List<Court> findAllWithRating() {
+        return courtMapper.findAllWithRating();
+    }
+
+    @Override
     public List<Court> findAvailable() {
         return courtMapper.findAvailable();
     }

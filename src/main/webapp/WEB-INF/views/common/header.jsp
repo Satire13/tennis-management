@@ -37,6 +37,7 @@
                                 <a class="dropdown-item" href="${pageContext.request.contextPath}/reservation/admin/list">预约管理</a>
                                 <a class="dropdown-item" href="${pageContext.request.contextPath}/event/admin/manage">赛事管理</a>
                                 <a class="dropdown-item" href="${pageContext.request.contextPath}/user/admin/users">用户管理</a>
+                                <a class="dropdown-item" href="${pageContext.request.contextPath}/review/all">评价管理</a>
                             </div>
                         </li>
                     </c:if>

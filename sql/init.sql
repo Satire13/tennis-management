@@ -8,6 +8,9 @@ CREATE DATABASE IF NOT EXISTS tennis_db DEFAULT CHARSET utf8 COLLATE utf8_genera
 
 USE tennis_db;
 
+-- 禁用外键检查，避免 DROP TABLE 时的顺序问题
+SET FOREIGN_KEY_CHECKS = 0;
+
 -- =============================================
 -- 用户表
 -- =============================================
@@ -103,6 +106,27 @@ CREATE TABLE `enrollments` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='赛事报名表';
 
 -- =============================================
+-- 评价表
+-- =============================================
+DROP TABLE IF EXISTS `reviews`;
+CREATE TABLE `reviews` (
+  `id`             INT(11)      NOT NULL AUTO_INCREMENT COMMENT '评价ID',
+  `reservation_id` INT(11)      NOT NULL COMMENT '预约ID',
+  `user_id`        INT(11)      NOT NULL COMMENT '用户ID',
+  `court_id`       INT(11)      NOT NULL COMMENT '场地ID',
+  `rating`         INT(1)       NOT NULL COMMENT '评分 1-5星',
+  `content`        TEXT         COMMENT '评价内容',
+  `create_time`    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '评价时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_court_id` (`court_id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_reservation_id` (`reservation_id`),
+  CONSTRAINT `fk_review_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_review_court` FOREIGN KEY (`court_id`) REFERENCES `courts` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_review_reservation` FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评价表';
+
+-- =============================================
 -- 初始数据
 -- =============================================
 
@@ -128,3 +152,18 @@ INSERT INTO `events` (`title`, `description`, `event_date`, `start_time`, `end_t
 VALUES
 ('2026年夏季网球公开赛', '面向全校师生的夏季网球单打比赛，欢迎各院系同学踊跃报名！', '2026-07-15', '09:00', '17:00', '中心网球场', 32, 'upcoming', 1),
 ('教职工网球友谊赛', '教职工网球爱好者交流赛，双打为主', '2026-06-22', '14:00', '18:00', '红土球场', 16, 'upcoming', 1);
+
+-- 示例预约（已完成），用于评价功能演示
+INSERT INTO `reservations` (`user_id`, `court_id`, `reserve_date`, `start_time`, `end_time`, `status`) VALUES
+(2, 1, '2026-06-15', '09:00', '10:00', 'completed'),
+(2, 2, '2026-06-16', '14:00', '15:00', 'completed'),
+(2, 3, '2026-06-17', '16:00', '17:00', 'completed');
+
+-- 示例评价
+INSERT INTO `reviews` (`reservation_id`, `user_id`, `court_id`, `rating`, `content`) VALUES
+(1, 2, 1, 5, '场地非常好！硬地平整，灯光照明充足，晚上打球也很舒服。工作人员服务态度很好，强烈推荐！'),
+(2, 2, 2, 4, '近期翻新的场地确实不错，地面摩擦力适中。就是价格稍贵，但整体体验很好。'),
+(3, 2, 3, 4, '带观众看台的场地很有比赛氛围，适合和朋友一起来。设施齐全，下次还会再来！');
+
+-- 重新启用外键检查
+SET FOREIGN_KEY_CHECKS = 1;

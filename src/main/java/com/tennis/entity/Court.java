@@ -13,6 +13,10 @@ public class Court {
     private String imageUrl;
     private String createTime;
 
+    // 非数据库字段：评分汇总
+    private Double avgRating;       // 平均评分
+    private Integer reviewCount;    // 评价数量
+
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
     public String getCourtName() { return courtName; }
@@ -29,4 +33,8 @@ public class Court {
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
     public String getCreateTime() { return createTime; }
     public void setCreateTime(String createTime) { this.createTime = createTime; }
+    public Double getAvgRating() { return avgRating; }
+    public void setAvgRating(Double avgRating) { this.avgRating = avgRating; }
+    public Integer getReviewCount() { return reviewCount; }
+    public void setReviewCount(Integer reviewCount) { this.reviewCount = reviewCount; }
 }

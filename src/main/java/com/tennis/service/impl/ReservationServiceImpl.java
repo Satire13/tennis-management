@@ -66,6 +66,23 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    public boolean complete(Integer id, Integer userId) {
+        Reservation reservation = reservationMapper.findById(id);
+        if (reservation == null) {
+            return false;
+        }
+        if (!reservation.getUserId().equals(userId)) {
+            return false;
+        }
+        // 只有已确认的预约才能标记为完成
+        if (!"confirmed".equals(reservation.getStatus())) {
+            return false;
+        }
+        int result = reservationMapper.completeReservation(id);
+        return result > 0;
+    }
+
+    @Override
     public List<Reservation> findConflicting(Court court, String date, String start, String end) {
         return reservationMapper.findConflicting(court.getId(), date, start, end);
     }

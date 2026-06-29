@@ -23,7 +23,11 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<Event> findAll() {
         List<Event> events = eventMapper.findAll();
-        refreshEventStatuses(events);
+        try {
+            refreshEventStatuses(events);
+        } catch (Exception e) {
+            // 日期格式异常时跳过状态刷新
+        }
         return events;
     }
 
@@ -31,7 +35,11 @@ public class EventServiceImpl implements EventService {
     public Event findById(Integer id) {
         Event event = eventMapper.findById(id);
         if (event != null) {
-            refreshEventStatus(event);
+            try {
+                refreshEventStatus(event);
+            } catch (Exception e) {
+                // 日期格式异常时跳过状态刷新
+            }
         }
         return event;
     }

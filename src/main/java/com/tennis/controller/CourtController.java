@@ -23,7 +23,7 @@ public class CourtController {
      */
     @GetMapping("/list")
     public String listPage(Model model) {
-        model.addAttribute("courts", courtService.findAll());
+        model.addAttribute("courts", courtService.findAllWithRating());
         return "court/list";
     }
 
