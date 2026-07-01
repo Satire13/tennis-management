@@ -131,4 +131,27 @@ public class ReservationController {
         model.addAttribute("reservations", reservationService.findAll());
         return "reservation/admin_list";
     }
+
+    /**
+     * 管理员：预约可视化看板
+     */
+    @GetMapping("/admin/board")
+    public String adminBoard(Model model) {
+        model.addAttribute("courts", courtService.findAll());
+        return "reservation/admin_board";
+    }
+
+    /**
+     * AJAX：获取某场地某日的预约看板数据
+     */
+    @GetMapping("/admin/boardData")
+    @ResponseBody
+    public Map<String, Object> boardData(@RequestParam Integer courtId,
+                                          @RequestParam String date) {
+        Map<String, Object> result = new HashMap<>();
+        List<Reservation> list = reservationService.findByCourtAndDate(courtId, date);
+        result.put("success", true);
+        result.put("data", list);
+        return result;
+    }
 }

@@ -47,7 +47,9 @@
 <div class="page-header">
     <div class="container">
         <h2 class="mb-1 tennis-green">预约管理</h2>
-        <p class="text-muted mb-0">查看和管理所有用户的场地预约记录</p>
+        <p class="text-muted mb-0">查看和管理所有用户的场地预约记录
+            <a href="${pageContext.request.contextPath}/reservation/admin/board" class="btn btn-sm btn-tennis ml-3">看板模式</a>
+        </p>
     </div>
 </div>
 

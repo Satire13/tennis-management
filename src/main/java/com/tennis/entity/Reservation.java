@@ -16,6 +16,7 @@ public class Reservation {
 
     // 关联字段（非数据库字段）
     private String username;
+    private String realName;
     private String courtName;
     private String courtLocation;
 
@@ -39,6 +40,8 @@ public class Reservation {
     public void setUpdateTime(String updateTime) { this.updateTime = updateTime; }
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
+    public String getRealName() { return realName; }
+    public void setRealName(String realName) { this.realName = realName; }
     public String getCourtName() { return courtName; }
     public void setCourtName(String courtName) { this.courtName = courtName; }
     public String getCourtLocation() { return courtLocation; }

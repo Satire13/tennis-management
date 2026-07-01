@@ -22,4 +22,8 @@ public interface ReservationMapper {
     int insert(Reservation res);
     int updateStatus(Reservation res);
     int completeReservation(Integer id);
+
+    /** 按场地和日期查询所有预约（用于可视化看板） */
+    List<Reservation> findByCourtAndDate(@Param("courtId") Integer courtId,
+                                          @Param("reserveDate") String reserveDate);
 }

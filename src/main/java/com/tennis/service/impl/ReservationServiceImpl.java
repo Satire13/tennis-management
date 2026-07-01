@@ -113,4 +113,9 @@ public class ReservationServiceImpl implements ReservationService {
     public List<Reservation> findConflicting(Court court, String date, String start, String end) {
         return reservationMapper.findConflicting(court.getId(), date, start, end);
     }
+
+    @Override
+    public List<Reservation> findByCourtAndDate(Integer courtId, String reserveDate) {
+        return reservationMapper.findByCourtAndDate(courtId, reserveDate);
+    }
 }

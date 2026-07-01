@@ -72,4 +72,17 @@
         WHERE id = #{id}
     </update>
 
+    <!-- 按场地和日期查询预约（用于可视化看板） -->
+    <select id="findByCourtAndDate" resultMap="reservationMap">
+        SELECT r.*, u.username AS username, u.real_name AS realName,
+               c.court_name AS courtName, c.location AS courtLocation
+        FROM reservations r
+        LEFT JOIN users u ON r.user_id = u.id
+        LEFT JOIN courts c ON r.court_id = c.id
+        WHERE r.court_id = #{courtId}
+          AND r.reserve_date = #{reserveDate}
+          AND r.status != 'cancelled'
+        ORDER BY r.start_time
+    </select>
+
 </mapper>
