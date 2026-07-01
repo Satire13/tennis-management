@@ -7,9 +7,12 @@ import com.tennis.entity.Reservation;
 import com.tennis.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Service
 public class ReservationServiceImpl implements ReservationService {
@@ -19,6 +22,9 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Autowired
     private CourtMapper courtMapper;
+
+    /** 按场地ID分组的锁，确保同一场地的预约串行化 */
+    private final ConcurrentHashMap<Integer, ReentrantLock> courtLocks = new ConcurrentHashMap<>();
 
     @Override
     public List<Reservation> findByUserId(Integer userId) {
@@ -31,19 +37,40 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean book(Reservation res) {
+        // 场地合法性检查
         Court court = courtMapper.findById(res.getCourtId());
         if (court == null || court.getStatus() == null || court.getStatus() == 0) {
             return false;
         }
-        List<Reservation> conflicts = reservationMapper.findConflicting(
-                res.getCourtId(), res.getReserveDate(), res.getStartTime(), res.getEndTime());
-        if (conflicts != null && !conflicts.isEmpty()) {
+
+        // 时间合法性检查
+        if (res.getStartTime() == null || res.getEndTime() == null ||
+            res.getReserveDate() == null) {
             return false;
         }
-        res.setStatus("confirmed");
-        int result = reservationMapper.insert(res);
-        return result > 0;
+        if (res.getStartTime().compareTo(res.getEndTime()) >= 0) {
+            return false;
+        }
+
+        // 对同一场地加锁，防止多用户并发预约同一时段
+        ReentrantLock lock = courtLocks.computeIfAbsent(res.getCourtId(), k -> new ReentrantLock());
+        lock.lock();
+        try {
+            // 事务内二次检查冲突（SELECT ... FOR UPDATE 行级锁）
+            List<Reservation> conflicts = reservationMapper.findConflictingForUpdate(
+                    res.getCourtId(), res.getReserveDate(), res.getStartTime(), res.getEndTime());
+            if (conflicts != null && !conflicts.isEmpty()) {
+                return false;
+            }
+
+            res.setStatus("confirmed");
+            int result = reservationMapper.insert(res);
+            return result > 0;
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override

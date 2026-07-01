@@ -41,6 +41,20 @@
           AND r.end_time &gt; #{startTime}
     </select>
 
+    <!-- 冲突查询 + 行级锁：防止并发预约同一场地同一时段 -->
+    <select id="findConflictingForUpdate" resultMap="reservationMap">
+        SELECT r.*, u.username AS username, c.court_name AS courtName, c.location AS courtLocation
+        FROM reservations r
+        LEFT JOIN users u ON r.user_id = u.id
+        LEFT JOIN courts c ON r.court_id = c.id
+        WHERE r.court_id = #{courtId}
+          AND r.reserve_date = #{reserveDate}
+          AND r.status != 'cancelled'
+          AND r.start_time &lt; #{endTime}
+          AND r.end_time &gt; #{startTime}
+        FOR UPDATE
+    </select>
+
     <insert id="insert" parameterType="com.tennis.entity.Reservation" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO reservations (user_id, court_id, reserve_date, start_time, end_time, status)
         VALUES (#{userId}, #{courtId}, #{reserveDate}, #{startTime}, #{endTime}, #{status})

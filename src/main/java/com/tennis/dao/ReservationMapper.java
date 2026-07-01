@@ -12,6 +12,13 @@ public interface ReservationMapper {
                                        @Param("reserveDate") String reserveDate,
                                        @Param("startTime") String startTime,
                                        @Param("endTime") String endTime);
+
+    /** 冲突检查（带行级锁，防止并发插入） */
+    List<Reservation> findConflictingForUpdate(@Param("courtId") Integer courtId,
+                                               @Param("reserveDate") String reserveDate,
+                                               @Param("startTime") String startTime,
+                                               @Param("endTime") String endTime);
+
     int insert(Reservation res);
     int updateStatus(Reservation res);
     int completeReservation(Integer id);

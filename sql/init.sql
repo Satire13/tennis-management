@@ -63,6 +63,7 @@ CREATE TABLE `reservations` (
   KEY `idx_user_id` (`user_id`),
   KEY `idx_court_id` (`court_id`),
   KEY `idx_reserve_date` (`reserve_date`),
+  KEY `idx_court_date` (`court_id`, `reserve_date`),
   CONSTRAINT `fk_res_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_res_court` FOREIGN KEY (`court_id`) REFERENCES `courts` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='预约记录表';
